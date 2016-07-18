@@ -1,0 +1,115 @@
+<web-app version="2.5"
+         xmlns="http://java.sun.com/xml/ns/javaee"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://java.sun.com/xml/ns/javaee
+	http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd">
+    <display-name>Archetype Created Web Application</display-name>
+    <!-- spring配置文件 -->
+    <context-param>
+        <param-name>contextConfigLocation</param-name>
+        <param-value>classpath:spring/*.xml</param-value>
+    </context-param>
+    <!-- log4j配置文件 -->
+    <context-param>
+        <param-name>log4jConfigLocation</param-name>
+        <param-value>classpath:log4j.properties</param-value>
+    </context-param>
+    <!-- 编码配置 -->
+    <filter>
+        <filter-name>encodingFilter</filter-name>
+        <filter-class>org.springframework.web.filter.CharacterEncodingFilter</filter-class>
+        <init-param>
+            <param-name>encoding</param-name>
+            <param-value>UTF-8</param-value>
+        </init-param>
+    </filter>
+    <filter-mapping>
+        <filter-name>encodingFilter</filter-name>
+        <url-pattern>/*</url-pattern>
+    </filter-mapping>
+    <!--阿里数据库监控-->
+    <servlet>
+        <servlet-name>DruidStatView</servlet-name>
+        <servlet-class>com.alibaba.druid.support.http.StatViewServlet</servlet-class>
+        <!-- 允许与拒绝查看数据库监控信息的IP地址 -->
+        <!--
+        <init-param>
+            <param-name>allow</param-name>
+            <param-value>127.0.0.1,10.2.15.52</param-value>
+        </init-param>
+
+        <init-param>
+            <param-name>deny</param-name>
+            <param-value>127.0.0.1</param-value>
+        </init-param>
+         -->
+        <!-- 登录帐号方式校验http://127.0.0.1:8080/yourapp/druid/login.html -->
+        <!--<init-param>-->
+        <!--<param-name>loginUsername</param-name>-->
+        <!--<param-value>username</param-value>-->
+        <!--</init-param>-->
+        <!--<init-param>-->
+        <!--<param-name>loginPassword</param-name>-->
+        <!--<param-value>password</param-value>-->
+        <!--</init-param>-->
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>DruidStatView</servlet-name>
+        <url-pattern>/druid/*</url-pattern>
+    </servlet-mapping>
+    <!-- WebStatFilter用于采集web-jdbc关联监控的数据 -->
+    <filter>
+        <filter-name>DruidWebStatFilter</filter-name>
+        <filter-class>com.alibaba.druid.support.http.WebStatFilter</filter-class>
+        <init-param>
+            <param-name>exclusions</param-name>
+            <param-value>*.js,*.gif,*.jpg,*.png,*.css,*.ico,/druid/*</param-value>
+        </init-param>
+        <!-- 配置profileEnable能够监控单个url调用的sql列表 -->
+        <init-param>
+            <param-name>profileEnable</param-name>
+            <param-value>true</param-value>
+        </init-param>
+        <!-- 你可以配置principalSessionName，使得druid能够知道当前的session的用户是谁 -->
+        <!--<init-param>-->
+            <!--<param-name>principalSessionName</param-name>-->
+            <!--<param-value>xxx.user</param-value>-->
+        <!--</init-param>-->
+    </filter>
+    <filter-mapping>
+        <filter-name>DruidWebStatFilter</filter-name>
+        <url-pattern>/*</url-pattern>
+    </filter-mapping>
+
+    <!-- spring-mvc配置 -->
+    <servlet>
+        <servlet-name>springMvc</servlet-name>
+        <servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>
+        <init-param>
+            <param-name>contextConfigLocation</param-name>
+            <param-value>classpath:spring/spring-mvc.xml</param-value>
+        </init-param>
+        <load-on-startup>1</load-on-startup>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>springMvc</servlet-name>
+        <url-pattern>/</url-pattern>
+    </servlet-mapping>
+    <!--spring-->
+    <listener>
+        <listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
+    </listener>
+    <!-- 防止内存泄露 -->
+    <listener>
+        <listener-class>org.springframework.web.util.IntrospectorCleanupListener</listener-class>
+    </listener>
+    <!--Spring为我们解决Hibernate的Session的关闭与开启问题-->
+    <filter>
+        <filter-name>openSessionInViewFilter</filter-name>
+        <filter-class>org.springframework.orm.hibernate4.support.OpenSessionInViewFilter</filter-class>
+    </filter>
+    <filter-mapping>
+        <filter-name>openSessionInViewFilter</filter-name>
+        <url-pattern>/*</url-pattern>
+    </filter-mapping>
+</web-app>
